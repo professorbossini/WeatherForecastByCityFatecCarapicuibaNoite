@@ -33,27 +33,38 @@ public class PrevisaoAdapter extends ArrayAdapter <Previsao> {
                         @NonNull ViewGroup parent) {
         Previsao caraDaVez = getItem(position);
         Context context = getContext();
-        LayoutInflater inflater = LayoutInflater.from(context);
-        View raiz = inflater.inflate(R.layout.list_item, parent, false);
-        ImageView conditionImageView =
-                raiz.findViewById(R.id.conditionImageView);
+        ViewHolder viewHolder = null;
+        if (convertView == null){
+            LayoutInflater inflater = LayoutInflater.from(context);
+            convertView = inflater.inflate(R.layout.list_item, parent, false);
+            viewHolder = new ViewHolder();
+            convertView.setTag(viewHolder);
+            viewHolder.conditionImageView =
+                    convertView.findViewById(R.id.conditionImageView);
+            viewHolder.dayTextView =
+                    convertView.findViewById(R.id.dayTextView);
+            viewHolder.lowTextView =
+                    convertView.findViewById(R.id.lowTextView);
+            viewHolder.highTextView =
+                    convertView.findViewById(R.id.highTextView);
+            viewHolder.humidityTextView =
+                    convertView.findViewById(R.id.humidityTextView);
 
-        new BaixaImagem(conditionImageView).
+        }
+        viewHolder = (ViewHolder) convertView.getTag();
+        new BaixaImagem(viewHolder.conditionImageView).
                 execute(context.getString(R.string.img_download_url,
                         caraDaVez.getIconName()));
-        TextView dayTextView =
-                raiz.findViewById(R.id.dayTextView);
-        TextView lowTextView =
-                raiz.findViewById(R.id.lowTextView);
-        TextView highTextView =
-                raiz.findViewById(R.id.highTextView);
-        TextView humidityTextView =
-                raiz.findViewById(R.id.humidityTextView);
-        dayTextView.setText(caraDaVez.getDiaDaSemana());
-        lowTextView.setText(caraDaVez.getLowTemp());
-        highTextView.setText(caraDaVez.getHighTemp());
-        humidityTextView.setText(caraDaVez.getHumidity());
-        return raiz;
+
+        viewHolder.dayTextView.setText(caraDaVez.getDiaDaSemana());
+        viewHolder.lowTextView.setText(caraDaVez.getLowTemp());
+        viewHolder.highTextView.setText(caraDaVez.getHighTemp());
+        viewHolder.humidityTextView.setText(caraDaVez.getHumidity());
+        return convertView;
+    }
+    private class ViewHolder{
+        public ImageView conditionImageView;
+        public TextView dayTextView, lowTextView, highTextView, humidityTextView;
     }
 
     private class BaixaImagem extends
